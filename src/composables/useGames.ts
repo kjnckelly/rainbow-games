@@ -4,7 +4,8 @@ import type { Game, FilterState } from '../types/game'
 
 // Module-level: parse once at startup (not on every composable call)
 const DEFAULT_RAW_MODULES = import.meta.glob('../games/*.md', {
-  as: 'raw',
+  query: '?raw',
+  import: 'default',
   eager: true,
 }) as Record<string, string>
 
