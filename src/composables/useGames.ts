@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue'
-import matter from 'gray-matter'
+import yaml from 'js-yaml'
 import type { Game, FilterState } from '../types/game'
 
 // Module-level: parse once at startup (not on every composable call)
@@ -9,9 +9,18 @@ const DEFAULT_RAW_MODULES = import.meta.glob('../games/*.md', {
   eager: true,
 }) as Record<string, string>
 
+function parseFrontmatter(raw: string): { data: Record<string, unknown>; content: string } {
+  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)/)
+  if (!match) return { data: {}, content: raw }
+  return {
+    data: (yaml.load(match[1]) as Record<string, unknown>) ?? {},
+    content: match[2],
+  }
+}
+
 function parseGame(path: string, raw: string): Game | null {
   try {
-    const { data, content } = matter(raw)
+    const { data, content } = parseFrontmatter(raw)
     const slug = path.split('/').pop()!.replace('.md', '')
     return {
       slug,
