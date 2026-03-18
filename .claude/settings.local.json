@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bash \"C:/Users/kelly/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.5/skills/brainstorming/scripts/start-server.sh\" --project-dir \"C:/Dev/kjnckelly/kjnc/rainbow-games\")",
+      "Bash(npm create:*)",
+      "Bash(printf '2\\\\n')",
+      "Bash(npx create-vite@latest . --template vue-ts)",
+      "Bash(npx:*)",
+      "Bash(cp:*)",
+      "Bash(npm install:*)",
+      "Bash(npm info:*)",
+      "Bash(timeout 15 npm run dev)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(node -e \"const p = require\\(''./node_modules/gray-matter/package.json''\\); console.log\\(''types:'', p.types || p.typings || ''NOT FOUND''\\)\")",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(node -e \"const pkg = require\\(''./node_modules/vite-plugin-pwa/package.json''\\); console.log\\(pkg.version\\)\")",
+      "Bash(node -e \"const pkg = require\\(''./node_modules/vitest/package.json''\\); console.log\\(pkg.version\\)\")",
+      "Bash(node -e \"const pkg = require\\(''./node_modules/vite/package.json''\\); console.log\\(pkg.version\\)\")",
+      "Bash(git:*)"
+    ]
+  }
+}
