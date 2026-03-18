@@ -1,7 +1,7 @@
 <template>
   <div class="game-view">
     <header class="game-header">
-      <RouterLink to="/" class="back-btn">← Back</RouterLink>
+      <RouterLink to="/" class="back-btn" aria-label="Back to all games">← Back</RouterLink>
     </header>
 
     <div v-if="game" class="game-content">
@@ -35,13 +35,16 @@ const NEON_COLORS = [
 ]
 
 const route = useRoute()
+const slug = computed(() =>
+  Array.isArray(route.params.slug) ? route.params.slug[0] : route.params.slug
+)
 const { games, getGameBySlug } = useGames()
 const md = new MarkdownIt()
 
-const game = computed(() => getGameBySlug(route.params.slug as string))
+const game = computed(() => getGameBySlug(slug.value))
 
 const gameIndex = computed(() =>
-  games.findIndex(g => g.slug === (route.params.slug as string))
+  games.findIndex(g => g.slug === slug.value)
 )
 
 const neonColor = computed(() =>

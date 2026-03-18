@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <header class="header">
-      <h1 class="app-title">🃏 Rainbow Games</h1>
+      <h1 id="page-title" class="app-title">🃏 Rainbow Games</h1>
     </header>
 
     <FilterBar
@@ -10,7 +10,7 @@
       @clear="clearFilters"
     />
 
-    <main class="content">
+    <main class="content" aria-labelledby="page-title">
       <p v-if="filteredGames.length === 0" class="empty-state">
         No games match — try adjusting your filters.
       </p>
