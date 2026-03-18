@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Brainstorming session files
+.superpowers/
+
+# Claude Code local settings
+.claude/settings.local.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
