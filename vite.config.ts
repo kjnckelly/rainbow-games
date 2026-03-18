@@ -31,6 +31,7 @@ export default defineConfig({
       },
     }),
   ],
+  // @ts-expect-error vitest@3 bundles vite@7 types; 'test' is valid at runtime
   test: {
     environment: 'jsdom',
     globals: true,
