@@ -41,7 +41,7 @@ Rainbow Games is a personal-use Vue 3 Progressive Web App (PWA) that serves as a
 | PWA | `vite-plugin-pwa` (Workbox) |
 | Routing | `vue-router` |
 | Markdown rendering | `markdown-it` |
-| Frontmatter parsing | `gray-matter` |
+| Frontmatter parsing | `gray-matter` (~25 KB bundle, acceptable for a PWA of this scope) |
 | Styling | CSS custom properties (no UI framework) |
 
 ---
@@ -79,7 +79,7 @@ Filters are surfaced in a `FilterBar` component at the top of the home screen. A
 
 | Filter | Type | Options |
 |---|---|---|
-| Players | Number selector | 2, 3, 4, 5, 6, 6+ (checks that value falls within `players_min`–`players_max`) |
+| Players | Number selector | 2, 3, 4, 5, 6, 6+ (checks that selected value falls within `players_min`–`players_max`; "6+" matches any game where `players_max >= 6`) |
 | Duration | Toggle chips | Any / Quick / Medium / Long |
 | Category | Toggle chips | Any / Competitive / Cooperative |
 | Equipment | Toggle chips | Any / No extras needed / Special equipment |
@@ -126,7 +126,7 @@ src/
 
 ### `FilterBar.vue`
 
-- Receives active filters as props, emits `filter-change` events
+- `HomeView` acts as the intermediary: it reads `activeFilters` and `setFilter` from `useGames`, passes `activeFilters` down to `FilterBar` as a prop, and calls `setFilter` in response to `FilterBar`'s `filter-change` events. `FilterBar` has no direct dependency on `useGames`.
 - Player count: numeric chip selector (2 / 3 / 4 / 5 / 6+)
 - Duration, Category, Equipment: toggle chip groups
 - "Clear all" resets all filters to "Any"
