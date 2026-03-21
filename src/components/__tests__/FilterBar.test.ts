@@ -8,6 +8,7 @@ const DEFAULT_FILTERS: FilterState = {
   duration: null,
   category: null,
   equipment: null,
+  deck: null,
 }
 
 describe('FilterBar', () => {
@@ -35,30 +36,28 @@ describe('FilterBar', () => {
     expect(wrapper.text()).toContain('Chips + Dice')
   })
 
-  it('emits filter-change with key and value when a chip is clicked', async () => {
+  it('emits filter-change with key and value when a select changes', async () => {
     const wrapper = mount(FilterBar, { props: { filters: DEFAULT_FILTERS } })
-    const quickButton = wrapper.findAll('button').find(b => b.text() === 'Quick')!
-    await quickButton.trigger('click')
+    await wrapper.find('#f-duration').setValue('quick')
     expect(wrapper.emitted('filter-change')).toBeTruthy()
     expect(wrapper.emitted('filter-change')![0]).toEqual(['duration', 'quick'])
   })
 
-  it('emits filter-change for player count', async () => {
+  it('emits filter-change for player count as a number', async () => {
     const wrapper = mount(FilterBar, { props: { filters: DEFAULT_FILTERS } })
-    const btn = wrapper.findAll('button').find(b => b.text() === '3')!
-    await btn.trigger('click')
+    await wrapper.find('#f-players').setValue('3')
     expect(wrapper.emitted('filter-change')![0]).toEqual(['players', 3])
   })
 
-  it('marks the active filter chip with the "active" class', () => {
+  it('marks the active select with the "active" class when a filter is set', () => {
     const wrapper = mount(FilterBar, {
       props: { filters: { ...DEFAULT_FILTERS, duration: 'quick' } },
     })
-    const quickButton = wrapper.findAll('button').find(b => b.text() === 'Quick')!
-    expect(quickButton.classes()).toContain('active')
+    expect(wrapper.find('#f-duration').classes()).toContain('active')
+    expect(wrapper.find('#f-players').classes()).not.toContain('active')
   })
 
-  it('emits clear event when "Clear all" is clicked', async () => {
+  it('emits clear event when "Clear" is clicked', async () => {
     const wrapper = mount(FilterBar, { props: { filters: DEFAULT_FILTERS } })
     await wrapper.find('.clear-btn').trigger('click')
     expect(wrapper.emitted('clear')).toBeTruthy()

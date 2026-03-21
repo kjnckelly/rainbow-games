@@ -1,134 +1,117 @@
 <template>
   <div class="filter-bar">
     <div class="filter-group">
-      <span class="filter-label">Players</span>
-      <div class="chips">
-        <button
-          v-for="opt in PLAYER_OPTIONS"
-          :key="String(opt.value)"
-          class="chip"
-          :class="{ active: filters.players === opt.value }"
-          @click="emit('filter-change', 'players', opt.value)"
-        >{{ opt.label }}</button>
-      </div>
+      <label class="filter-label" for="f-players">Players</label>
+      <select id="f-players" class="filter-select" :class="{ active: filters.players !== null }" :value="playersStr" @change="onPlayers">
+        <option value="">Any</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6+</option>
+      </select>
     </div>
 
     <div class="filter-group">
-      <span class="filter-label">Duration</span>
-      <div class="chips">
-        <button
-          v-for="opt in DURATION_OPTIONS"
-          :key="String(opt.value)"
-          class="chip"
-          :class="{ active: filters.duration === opt.value }"
-          @click="emit('filter-change', 'duration', opt.value)"
-        >{{ opt.label }}</button>
-      </div>
+      <label class="filter-label" for="f-duration">Duration</label>
+      <select id="f-duration" class="filter-select" :class="{ active: filters.duration !== null }" :value="filters.duration ?? ''" @change="onDuration">
+        <option value="">Any</option>
+        <option value="quick">Quick</option>
+        <option value="medium">Medium</option>
+        <option value="long">Long</option>
+      </select>
     </div>
 
     <div class="filter-group">
-      <span class="filter-label">Type</span>
-      <div class="chips">
-        <button
-          v-for="opt in CATEGORY_OPTIONS"
-          :key="String(opt.value)"
-          class="chip"
-          :class="{ active: filters.category === opt.value }"
-          @click="emit('filter-change', 'category', opt.value)"
-        >{{ opt.label }}</button>
-      </div>
+      <label class="filter-label" for="f-type">Type</label>
+      <select id="f-type" class="filter-select" :class="{ active: filters.category !== null }" :value="filters.category ?? ''" @change="onCategory">
+        <option value="">Any</option>
+        <option value="competitive">Competitive</option>
+        <option value="cooperative">Cooperative</option>
+      </select>
     </div>
 
     <div class="filter-group">
-      <span class="filter-label">Equipment</span>
-      <div class="chips">
-        <button
-          v-for="opt in EQUIPMENT_OPTIONS"
-          :key="String(opt.value)"
-          class="chip"
-          :class="{ active: filters.equipment === opt.value }"
-          @click="emit('filter-change', 'equipment', opt.value)"
-        >{{ opt.label }}</button>
-      </div>
+      <label class="filter-label" for="f-equipment">Equipment</label>
+      <select id="f-equipment" class="filter-select" :class="{ active: filters.equipment !== null }" :value="equipmentStr" @change="onEquipment">
+        <option value="">Any</option>
+        <option value="false">Cards only</option>
+        <option value="true">Chips + Dice</option>
+      </select>
     </div>
 
     <div class="filter-group">
-      <span class="filter-label">Deck</span>
-      <div class="chips">
-        <button
-          v-for="opt in DECK_OPTIONS"
-          :key="String(opt.value)"
-          class="chip"
-          :class="{ active: filters.deck === opt.value }"
-          @click="emit('filter-change', 'deck', opt.value)"
-        >{{ opt.label }}</button>
-      </div>
+      <label class="filter-label" for="f-deck">Deck</label>
+      <select id="f-deck" class="filter-select" :class="{ active: filters.deck !== null }" :value="filters.deck ?? ''" @change="onDeck">
+        <option value="">Any</option>
+        <option value="rainbow">Rainbow</option>
+        <option value="face">Face</option>
+      </select>
     </div>
 
-    <button class="clear-btn" @click="emit('clear')">Clear all</button>
+    <button class="clear-btn" @click="emit('clear')">Clear</button>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { FilterState } from '../types/game'
 
-const PLAYER_OPTIONS = [
-  { label: 'Any', value: null },
-  { label: '2', value: 2 },
-  { label: '3', value: 3 },
-  { label: '4', value: 4 },
-  { label: '5', value: 5 },
-  { label: '6+', value: 6 },
-] as const
-
-const DURATION_OPTIONS = [
-  { label: 'Any', value: null },
-  { label: 'Quick', value: 'quick' },
-  { label: 'Medium', value: 'medium' },
-  { label: 'Long', value: 'long' },
-] as const
-
-const CATEGORY_OPTIONS = [
-  { label: 'Any', value: null },
-  { label: 'Competitive', value: 'competitive' },
-  { label: 'Cooperative', value: 'cooperative' },
-] as const
-
-const EQUIPMENT_OPTIONS = [
-  { label: 'Any', value: null },
-  { label: 'Cards only', value: false },
-  { label: 'Chips + Dice', value: true },
-] as const
-
-const DECK_OPTIONS = [
-  { label: 'Any', value: null },
-  { label: 'Rainbow', value: 'rainbow' },
-  { label: 'Face', value: 'face' },
-] as const
-
-defineProps<{ filters: FilterState }>()
+const props = defineProps<{ filters: FilterState }>()
 
 const emit = defineEmits<{
   'filter-change': [key: keyof FilterState, value: FilterState[keyof FilterState]]
   'clear': []
 }>()
+
+const playersStr = computed(() => props.filters.players === null ? '' : String(props.filters.players))
+const equipmentStr = computed(() => props.filters.equipment === null ? '' : String(props.filters.equipment))
+
+function val(e: Event) {
+  return (e.target as HTMLSelectElement).value
+}
+
+function onPlayers(e: Event) {
+  const v = val(e)
+  emit('filter-change', 'players', v === '' ? null : Number(v) as FilterState['players'])
+}
+
+function onDuration(e: Event) {
+  const v = val(e)
+  emit('filter-change', 'duration', v === '' ? null : v as FilterState['duration'])
+}
+
+function onCategory(e: Event) {
+  const v = val(e)
+  emit('filter-change', 'category', v === '' ? null : v as FilterState['category'])
+}
+
+function onEquipment(e: Event) {
+  const v = val(e)
+  emit('filter-change', 'equipment', v === '' ? null : v === 'true')
+}
+
+function onDeck(e: Event) {
+  const v = val(e)
+  emit('filter-change', 'deck', v === '' ? null : v as FilterState['deck'])
+}
 </script>
 
 <style scoped>
 .filter-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 8px 10px;
+  padding: 12px 16px;
   background: var(--bg-card);
   border-bottom: 1px solid var(--border-card);
-  align-items: flex-start;
+  align-items: end;
 }
 
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .filter-label {
@@ -139,41 +122,35 @@ const emit = defineEmits<{
   color: var(--text-secondary);
 }
 
-.chips {
-  display: flex;
-  gap: 5px;
-  flex-wrap: wrap;
-}
-
-.chip {
+.filter-select {
   background: var(--bg-primary);
   border: 1px solid var(--border-card);
-  border-radius: 20px;
-  padding: 4px 12px;
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  transition: border-color 0.15s, color 0.15s;
-}
-
-.chip:hover {
-  border-color: var(--text-secondary);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 0.8rem;
   color: var(--text-primary);
+  font-family: inherit;
+  cursor: pointer;
+  width: 100%;
+  transition: border-color 0.15s;
 }
 
-.chip.active {
+.filter-select:focus {
+  outline: none;
+  border-color: var(--neon-2);
+}
+
+.filter-select.active {
   border-color: var(--neon-2);
   color: var(--neon-2);
-  background: rgba(79, 172, 254, 0.1);
 }
 
 .clear-btn {
-  background: none;
-  border: none;
+  align-self: end;
   color: var(--text-secondary);
   font-size: 0.75rem;
   text-decoration: underline;
-  align-self: flex-end;
-  padding: 4px 0;
+  padding: 6px 0;
   transition: color 0.15s;
 }
 
