@@ -12,6 +12,7 @@ const TEST_GAME: Game = {
   duration: 'quick',
   category: 'competitive',
   equipment: false,
+  deck: 'rainbow',
   content: '## Rules\nAsk for cards.',
 }
 
