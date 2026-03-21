@@ -29,6 +29,7 @@ players_max: 5
 duration: quick
 category: competitive
 equipment: false
+deck: rainbow
 ---
 
 Write the rules here in Markdown.
@@ -44,6 +45,7 @@ Write the rules here in Markdown.
 | `duration` | string | `quick`, `medium`, or `long` |
 | `category` | string | `competitive` or `cooperative` |
 | `equipment` | boolean | `true` if special cards/equipment needed, `false` for a standard deck |
+| `deck` | string | `rainbow` or `face` |
 
 3. Save the file. The dev server will hot-reload and the card will appear immediately. No other changes needed.
 
