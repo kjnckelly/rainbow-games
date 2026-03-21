@@ -31,8 +31,8 @@ describe('FilterBar', () => {
 
   it('renders equipment options', () => {
     const wrapper = mount(FilterBar, { props: { filters: DEFAULT_FILTERS } })
-    expect(wrapper.text()).toContain('Standard deck')
-    expect(wrapper.text()).toContain('Special equipment')
+    expect(wrapper.text()).toContain('Cards only')
+    expect(wrapper.text()).toContain('Chips + Dice')
   })
 
   it('emits filter-change with key and value when a chip is clicked', async () => {

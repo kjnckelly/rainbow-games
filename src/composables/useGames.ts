@@ -30,6 +30,7 @@ function parseGame(path: string, raw: string): Game | null {
       duration: data.duration as Game['duration'],
       category: data.category as Game['category'],
       equipment: Boolean(data.equipment),
+      deck: String(data.deck) as Game['deck'],
       content,
     }
   } catch (err) {
@@ -52,6 +53,7 @@ const DEFAULT_FILTERS: FilterState = {
   duration: null,
   category: null,
   equipment: null,
+  deck: null,
 }
 
 export function useGames(rawModules?: Record<string, string>) {
@@ -74,6 +76,7 @@ export function useGames(rawModules?: Record<string, string>) {
       if (f.duration !== null && game.duration !== f.duration) return false
       if (f.category !== null && game.category !== f.category) return false
       if (f.equipment !== null && game.equipment !== f.equipment) return false
+      if (f.deck !== null && game.deck !== f.deck) return false
       return true
     })
   })

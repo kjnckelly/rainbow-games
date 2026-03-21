@@ -52,6 +52,19 @@
       </div>
     </div>
 
+    <div class="filter-group">
+      <span class="filter-label">Deck</span>
+      <div class="chips">
+        <button
+          v-for="opt in DECK_OPTIONS"
+          :key="String(opt.value)"
+          class="chip"
+          :class="{ active: filters.deck === opt.value }"
+          @click="emit('filter-change', 'deck', opt.value)"
+        >{{ opt.label }}</button>
+      </div>
+    </div>
+
     <button class="clear-btn" @click="emit('clear')">Clear all</button>
   </div>
 </template>
@@ -83,8 +96,14 @@ const CATEGORY_OPTIONS = [
 
 const EQUIPMENT_OPTIONS = [
   { label: 'Any', value: null },
-  { label: 'Standard deck', value: false },
-  { label: 'Special equipment', value: true },
+  { label: 'Cards only', value: false },
+  { label: 'Chips + Dice', value: true },
+] as const
+
+const DECK_OPTIONS = [
+  { label: 'Any', value: null },
+  { label: 'Rainbow', value: 'rainbow' },
+  { label: 'Face', value: 'face' },
 ] as const
 
 defineProps<{ filters: FilterState }>()
