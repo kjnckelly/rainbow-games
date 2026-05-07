@@ -45,10 +45,13 @@ const playerRange = computed(() => {
 
 const rating = computed(() => ratings.value[props.game.slug] ?? 0)
 
-const ratingFillStyle = computed(() => ({
-  width: `${rating.value * 10}%`,
-  backgroundSize: `${Math.round(1000 / rating.value)}% 100%`,
-}))
+const ratingFillStyle = computed(() => {
+  if (rating.value === 0) return {}
+  return {
+    width: `${rating.value * 10}%`,
+    backgroundSize: `${Math.round(1000 / rating.value)}% 100%`,
+  }
+})
 </script>
 
 <style scoped>
