@@ -49,6 +49,20 @@
       </select>
     </div>
 
+    <div class="filter-group">
+      <label class="filter-label" for="f-rating">Rating ≥</label>
+      <select
+        id="f-rating"
+        class="filter-select"
+        :class="{ active: filters.minRating !== null }"
+        :value="filters.minRating ?? ''"
+        @change="onMinRating"
+      >
+        <option value="">Any</option>
+        <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
+      </select>
+    </div>
+
     <button class="clear-btn" @click="emit('clear')">Clear</button>
   </div>
 </template>
@@ -94,6 +108,11 @@ function onEquipment(e: Event) {
 function onDeck(e: Event) {
   const v = val(e)
   emit('filter-change', 'deck', v === '' ? null : v as FilterState['deck'])
+}
+
+function onMinRating(e: Event) {
+  const v = val(e)
+  emit('filter-change', 'minRating', v === '' ? null : Number(v) as FilterState['minRating'])
 }
 </script>
 
