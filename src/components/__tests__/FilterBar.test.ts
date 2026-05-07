@@ -9,6 +9,7 @@ const DEFAULT_FILTERS: FilterState = {
   category: null,
   equipment: null,
   deck: null,
+  minRating: null,
 }
 
 describe('FilterBar', () => {

@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 import yaml from 'js-yaml'
 import type { Game, FilterState } from '../types/game'
+import { useRatings } from './useRatings'
 
 // Module-level: parse once at startup (not on every composable call)
 const DEFAULT_RAW_MODULES = import.meta.glob('../games/*.md', {
@@ -48,12 +49,15 @@ function buildGameList(rawModules: Record<string, string>): Game[] {
 
 const ALL_GAMES = buildGameList(DEFAULT_RAW_MODULES)
 
+const { ratings } = useRatings()
+
 const DEFAULT_FILTERS: FilterState = {
   players: null,
   duration: null,
   category: null,
   equipment: null,
   deck: null,
+  minRating: null,
 }
 
 export function useGames(rawModules?: Record<string, string>) {
@@ -77,6 +81,10 @@ export function useGames(rawModules?: Record<string, string>) {
       if (f.category !== null && game.category !== f.category) return false
       if (f.equipment !== null && game.equipment !== f.equipment) return false
       if (f.deck !== null && game.deck !== f.deck) return false
+      if (f.minRating !== null) {
+        const r = ratings.value[game.slug] ?? 0
+        if (r < f.minRating) return false
+      }
       return true
     })
   })

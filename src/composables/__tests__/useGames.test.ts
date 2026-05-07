@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { useGames } from '../useGames'
+import { useRatings } from '../useRatings'
 
 const MOCK_MODULES: Record<string, string> = {
   '/src/games/go-fish.md': `---
@@ -132,5 +133,47 @@ describe('useGames', () => {
     expect(filteredGames.value).toHaveLength(1)
     clearFilters()
     expect(filteredGames.value).toHaveLength(3)
+  })
+
+  describe('minRating filter', () => {
+    beforeEach(() => {
+      localStorage.clear()
+      useRatings().ratings.value = {}
+    })
+
+    it('null minRating shows all games regardless of rating', () => {
+      const { filteredGames } = useGames(MOCK_MODULES)
+      expect(filteredGames.value).toHaveLength(3)
+    })
+
+    it('minRating excludes games rated below the threshold', () => {
+      const { setRating } = useRatings()
+      setRating('go-fish', 3)
+      setRating('rummy', 7)
+      // hanabi has no rating (0)
+      const { filteredGames, setFilter } = useGames(MOCK_MODULES)
+      setFilter('minRating', 5)
+      expect(filteredGames.value).toHaveLength(1)
+      expect(filteredGames.value[0].name).toBe('Rummy')
+    })
+
+    it('minRating excludes unplayed games (rating 0)', () => {
+      const { setRating } = useRatings()
+      setRating('go-fish', 8)
+      // rummy and hanabi are unplayed (0)
+      const { filteredGames, setFilter } = useGames(MOCK_MODULES)
+      setFilter('minRating', 1)
+      expect(filteredGames.value).toHaveLength(1)
+      expect(filteredGames.value[0].name).toBe('Go Fish')
+    })
+
+    it('minRating includes games exactly at the threshold', () => {
+      const { setRating } = useRatings()
+      setRating('go-fish', 5)
+      setRating('rummy', 5)
+      const { filteredGames, setFilter } = useGames(MOCK_MODULES)
+      setFilter('minRating', 5)
+      expect(filteredGames.value).toHaveLength(2)
+    })
   })
 })

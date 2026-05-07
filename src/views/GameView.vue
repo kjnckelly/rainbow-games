@@ -12,6 +12,19 @@
         <span class="chip">{{ game.category === 'competitive' ? '⚔️' : '🤝' }} {{ game.category }}</span>
         <span class="chip">🃏 {{ game.equipment ? 'Special deck' : 'Standard deck' }}</span>
       </div>
+      <div class="rating-control">
+        <label class="filter-label" for="game-rating">Your Rating</label>
+        <select
+          id="game-rating"
+          class="filter-select"
+          :class="{ active: currentRating > 0 }"
+          :value="currentRating"
+          @change="onRatingChange"
+        >
+          <option value="0">Unplayed</option>
+          <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
+        </select>
+      </div>
       <!-- v-html is safe here — content is authored by the app owner, not user input -->
       <div class="rules prose" v-html="renderedContent" />
     </div>
@@ -28,6 +41,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import MarkdownIt from 'markdown-it'
 import { useGames } from '../composables/useGames'
+import { useRatings } from '../composables/useRatings'
 
 const NEON_COLORS = [
   'var(--neon-1)', 'var(--neon-2)', 'var(--neon-3)',
@@ -60,6 +74,15 @@ const playerRange = computed(() => {
   if (game.value.playersMin === game.value.playersMax) return `${game.value.playersMin}`
   return `${game.value.playersMin}–${game.value.playersMax}`
 })
+
+const { ratings, setRating } = useRatings()
+
+const currentRating = computed(() => ratings.value[slug.value] ?? 0)
+
+function onRatingChange(e: Event) {
+  const score = Number((e.target as HTMLSelectElement).value)
+  setRating(slug.value, score)
+}
 </script>
 
 <style scoped>
@@ -95,7 +118,45 @@ const playerRange = computed(() => {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  margin-bottom: 12px;
+}
+
+.rating-control {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   margin-bottom: 32px;
+  max-width: 160px;
+}
+
+.filter-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+.filter-select {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-card);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--neon-2);
+}
+
+.filter-select.active {
+  border-color: var(--neon-2);
+  color: var(--neon-2);
 }
 
 .chip {

@@ -24,4 +24,5 @@ export interface FilterState {
   category: CategoryFilter
   equipment: EquipmentFilter
   deck: DeckFilter
+  minRating: number | null
 }
